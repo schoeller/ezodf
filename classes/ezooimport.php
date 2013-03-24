@@ -7,7 +7,7 @@
 // ## BEGIN COPYRIGHT, LICENSE AND WARRANTY NOTICE ##
 // SOFTWARE NAME: eZ Publish
 // SOFTWARE RELEASE: 3.9.x
-// COPYRIGHT NOTICE: Copyright (C) 1999-2013 eZ Systems AS
+// COPYRIGHT NOTICE: Copyright (C) 1999-2012 eZ Systems AS
 // SOFTWARE LICENSE: GNU General Public License v2.0
 // NOTICE: >
 //   This program is free software; you can redistribute it and/or
@@ -865,6 +865,71 @@ class eZOOImport
                                 $dataMap[$attributeIdentifier]->store();
                             }
 
+                        }break;
+
+                        case "ezkeyword":
+                        {
+                            $eztextDom = new DOMDOcument( '1.0', 'UTF-8' );
+                            $eztextDom->loadXML( $xmlTextArray[$sectionName] );
+                            $text = $eztextDom->documentElement->textContent;
+                            $keyword = new eZKeyword();
+                            $keyword->initializeKeyword( $text );
+                            $dataMap[$attributeIdentifier]->setContent( $keyword );
+                            $dataMap[$attributeIdentifier]->store();
+                        }break;
+
+                        case "ezselection":
+                        {
+                            $eztextDom = new DOMDOcument( '1.0', 'UTF-8' );
+                            $eztextDom->loadXML( $xmlTextArray[$sectionName] );
+                            $text = trim( $eztextDom->documentElement->textContent );
+                            $classContent = $dataMap[$attributeIdentifier]->attribute( 'class_content' );
+                            $selectedId = null;
+                            foreach ( $classContent['options'] as $option )
+                            {
+                                if ( $option['name'] === $text )
+                                {
+                                    $selectedId = $option['id'];
+                                    break;
+                                }
+                            }
+                            $dataMap[$attributeIdentifier]->setAttribute( 'data_text', $selectedId );
+                            $dataMap[$attributeIdentifier]->store();
+                        }break;
+
+                        case "ezinteger":
+                        {
+                            $eztextDom = new DOMDOcument( '1.0', 'UTF-8' );
+                            $eztextDom->loadXML( $xmlTextArray[$sectionName] );
+                            $text = trim( $eztextDom->documentElement->textContent );
+                            $dataMap[$attributeIdentifier]->setAttribute( 'data_int', $text );
+                            $dataMap[$attributeIdentifier]->store();
+                        }break;
+
+                        case "ezobjectrelation":
+                        {
+                            $eztextDom = new DOMDOcument( '1.0', 'UTF-8' );
+                            $eztextDom->loadXML( $xmlTextArray[$sectionName] );
+                            $text = trim( $eztextDom->documentElement->textContent );
+                            $ccaid = (int)$dataMap[$attributeIdentifier]->ContentClassAttributeID;
+                            $cca = eZContentClassAttribute::fetch( $ccaid );
+                            $obj = new eZObjectRelationType();
+                            $relationSpecs = $obj->classAttributeContent( $cca );
+                            
+                            if ( $relationSpecs['default_selection_node'] )
+                            {
+                                $possibleValues = eZContentObjectTreeNode::subTreeByNodeID( array( 'AttributeFilter' => array( 'and', array( 'name', '=', $text ) ) ), (int)$relationSpecs['default_selection_node'] );
+                                if ( $possibleValues )
+                                {
+                                    $dataMap[$attributeIdentifier]->setAttribute( 'data_int', $possibleValues[0]->ContentObjectID );
+                                    $dataMap[$attributeIdentifier]->store();
+                                }
+                                else
+                                {
+                                    eZDebug::writeError( "'$text' not found under node {$relationSpecs['default_selection_node']}", "eZOOImport->import() :: eZObjectRelation" );
+                                }
+                            }
+                            
                         }break;
 
                         default:
