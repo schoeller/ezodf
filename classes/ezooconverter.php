@@ -64,7 +64,7 @@ class eZOOConverter
         $object = $node->attribute( 'object' );
         $attributes = $object->contentObjectAttributes();
 
-        $supportedDatatypes = array( 'ezstring', 'eztext', 'ezxmltext', 'ezimage', 'ezdate', 'ezdatetime', 'ezmatrix' );
+        $supportedDatatypes = array( 'ezstring', 'eztext', 'ezxmltext', 'ezimage', 'ezdate', 'ezdatetime', 'ezmatrix', 'ezgmaplocation', 'ezselection' );
 
         $odfINI = eZINI::instance( 'odf.ini' );
         $ClassMappingToHeader = ( $odfINI->variable( 'ODFExport', 'ClassAttributeMappingToHeader' ) == 'enabled' ) ? true : false;
@@ -191,6 +191,21 @@ class eZOOConverter
                     }
 
                     $ooGenerator->endTable();
+                } break;
+
+                case "ezgmaplocation":
+                {
+                    $location = $attribute->content();
+                    $ooGenerator->addParagraph( $location->attribute( "longitude" ) . "/" . $location->attribute( "latitude" ) );
+                } break;
+
+                case "ezselection":
+                {
+                    $selection = $attribute->content();
+                    foreach ($selection as $option => $o)
+                    {
+                        $ooGenerator->addHeader( $o );
+                    }
                 } break;
             }
 
