@@ -64,7 +64,7 @@ class eZOOConverter
         $object = $node->attribute( 'object' );
         $attributes = $object->contentObjectAttributes();
 
-        $supportedDatatypes = array( 'ezstring', 'eztext', 'ezxmltext', 'ezimage', 'ezdate', 'ezdatetime', 'ezmatrix', 'ezgmaplocation', 'ezselection' );
+        $supportedDatatypes = array( 'ezstring', 'eztext', 'ezxmltext', 'ezimage', 'ezdate', 'ezdatetime', 'ezmatrix', 'ezgmaplocation', 'ezselection', 'ezinteger' );
 
         $odfINI = eZINI::instance( 'odf.ini' );
         $ClassMappingToHeader = ( $odfINI->variable( 'ODFExport', 'ClassAttributeMappingToHeader' ) == 'enabled' ) ? true : false;
@@ -77,6 +77,7 @@ class eZOOConverter
         {
             $datatype = $attribute->attribute( 'data_type_string' );
             $identifier = $attribute->attribute( "contentclass_attribute_identifier" );
+//eZDebug::writeError($attribute);
 
             if ( !in_array( $datatype, $supportedDatatypes ) )
             {
@@ -206,6 +207,12 @@ class eZOOConverter
                     {
                         $ooGenerator->addHeader( $o );
                     }
+                } break;
+
+                case "ezinteger":
+                {
+                    $integer = $attribute->content();
+                    $ooGenerator->addParagraph( $integer );
                 } break;
             }
 
