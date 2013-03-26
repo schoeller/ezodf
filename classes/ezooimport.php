@@ -932,6 +932,25 @@ class eZOOImport
                             
                         }break;
 
+                        case "ezgmaplocation":
+                        {
+                            $eztextDom = new DOMDOcument( '1.0', 'UTF-8' );
+                            $eztextDom->loadXML( $xmlTextArray[$sectionName] );
+                            $string = trim( $eztextDom->documentElement->textContent );
+                            $data = $string !== '' && strpos( $string, '#' ) !== false ? explode( '#', $string ) : array( 0 );
+
+                            if ( $dataMap[$attributeIdentifier]->attribute( 'data_int' ) != 0 )
+                            {
+                                $location = eZGmapLocation::fetch( $dataMap[$attributeIdentifier]->attribute('id'), $dataMap[$attributeIdentifier]->attribute('version') );
+                                $location->setAttribute( 'latitude', $data[0] );
+                                $location->setAttribute( 'longitude', $data[1] );
+                                $location->setAttribute( 'address', $data[2] );
+                                $dataMap[$attributeIdentifier]->setContent( $location );
+                                $dataMap[$attributeIdentifier]->store();
+                            }
+
+                        }break;
+
                         default:
                         {
                             eZDebug::writeError( "Unsupported datatype for OpenOffice.org import: " . $dataMap[$attributeIdentifier]->DataTypeString );
