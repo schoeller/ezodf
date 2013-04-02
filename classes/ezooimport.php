@@ -902,8 +902,15 @@ class eZOOImport
                             $eztextDom = new DOMDOcument( '1.0', 'UTF-8' );
                             $eztextDom->loadXML( $xmlTextArray[$sectionName] );
                             $text = trim( $eztextDom->documentElement->textContent );
-                            $dataMap[$attributeIdentifier]->setAttribute( 'data_int', $text );
-                            $dataMap[$attributeIdentifier]->store();
+                            if ( is_numeric( $text ) )
+                            {
+                                $dataMap[$attributeIdentifier]->setAttribute( 'data_int', $text );
+                                $dataMap[$attributeIdentifier]->store();
+                            }
+                            else
+                            {
+                                    eZDebug::writeError( "Integer value is non-numeric" );
+                            }
                         }break;
 
                         case "ezobjectrelation":
@@ -939,7 +946,7 @@ class eZOOImport
                             $string = trim( $eztextDom->documentElement->textContent );
                             $data = $string !== '' && strpos( $string, '#' ) !== false ? explode( '#', $string ) : array( 0 );
 
-                            if ( $dataMap[$attributeIdentifier]->attribute( 'data_int' ) != 0 )
+                            if ( $dataMap[$attributeIdentifier]->attribute( 'data_int' ) != 0 && is_numeric( $data[0] ) && is_numeric( $data[1] ) )
                             {
                                 $location = eZGmapLocation::fetch( $dataMap[$attributeIdentifier]->attribute('id'), $dataMap[$attributeIdentifier]->attribute('version') );
                                 $location->setAttribute( 'latitude', $data[0] );
@@ -947,6 +954,28 @@ class eZOOImport
                                 $location->setAttribute( 'address', $data[2] );
                                 $dataMap[$attributeIdentifier]->setContent( $location );
                                 $dataMap[$attributeIdentifier]->store();
+                            }
+                            else
+                            {
+                                    eZDebug::writeError( "One or more ezgmaplocation attributes are non-numeric" );
+                            }
+
+                        }break;
+
+                        case "ezprice":
+                        {
+                            $eztextDom = new DOMDOcument( '1.0', 'UTF-8' );
+                            $eztextDom->loadXML( $xmlTextArray[$sectionName] );
+                            $price = trim( $eztextDom->documentElement->textContent );
+
+                            if ( is_numeric( $price ) )
+                            {
+                                $dataMap[$attributeIdentifier]->setAttribute( "data_float", $price );
+                                $dataMap[$attributeIdentifier]->store();
+                            }
+                            else
+                            {
+                                    eZDebug::writeError( "Price attribute is non-numeric" );
                             }
 
                         }break;
