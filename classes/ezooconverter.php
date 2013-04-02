@@ -64,7 +64,7 @@ class eZOOConverter
         $object = $node->attribute( 'object' );
         $attributes = $object->contentObjectAttributes();
 
-        $supportedDatatypes = array( 'ezstring', 'eztext', 'ezxmltext', 'ezimage', 'ezdate', 'ezdatetime', 'ezmatrix', 'ezgmaplocation', 'ezselection', 'ezinteger', 'ezkeyword' );
+        $supportedDatatypes = array( 'ezstring', 'eztext', 'ezxmltext', 'ezimage', 'ezdate', 'ezdatetime', 'ezmatrix', 'ezgmaplocation', 'ezselection', 'ezinteger', 'ezkeyword', 'ezprice' );
 
         $odfINI = eZINI::instance( 'odf.ini' );
         $ClassMappingToHeader = ( $odfINI->variable( 'ODFExport', 'ClassAttributeMappingToHeader' ) == 'enabled' ) ? true : false;
@@ -216,6 +216,12 @@ class eZOOConverter
                 {
                     $keyword = $attribute->content();
                     $ooGenerator->addParagraph( $keyword->KeywordString());
+                } break;
+
+                case "ezprice":
+                {
+                    $price = $attribute->content();
+                    $ooGenerator->addHeader( $price->attribute( 'price' ) );
                 } break;
             }
 
