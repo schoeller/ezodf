@@ -655,6 +655,10 @@ class eZOOImport
                         case "ezstring":
                         case "eztext":
                         {
+                            if ( !isset( $xmlTextArray[$sectionName] ) )
+                            {
+                                continue;
+                            }
                             $eztextDom = new DOMDOcument( '1.0', 'UTF-8' );
                             $eztextDom->loadXML( $xmlTextArray[$sectionName] );
                             $text = $eztextDom->documentElement->textContent;
@@ -664,6 +668,10 @@ class eZOOImport
 
                         case "ezxmltext":
                         {
+                            if ( !isset( $xmlTextArray[$sectionName] ) )
+                            {
+                                continue;
+                            }
                             $dataMap[$attributeIdentifier]->setAttribute( 'data_text', $xmlTextArray[$sectionName] );
                             $dataMap[$attributeIdentifier]->store();
                         }break;
@@ -673,6 +681,10 @@ class eZOOImport
                         {
                             // Only support date formats as a single paragraph in a section with the format:
                             // day/month/year
+                            if ( !isset( $xmlTextArray[$sectionName] ) )
+                            {
+                                continue;
+                            }
                             $dateString = strip_tags( $xmlTextArray[$sectionName] );
 
                             $dateArray = explode( "/", $dateString );
@@ -697,6 +709,10 @@ class eZOOImport
                         {
                             // Only support date formats as a single paragraph in a section with the format:
                             // day/month/year 14:00
+                            if ( !isset( $xmlTextArray[$sectionName] ) )
+                            {
+                                continue;
+                            }
                             $dateString = trim( strip_tags( $xmlTextArray[$sectionName] ) );
 
                             $dateTimeArray = explode(  " ", $dateString );
@@ -869,6 +885,10 @@ class eZOOImport
 
                         case "ezkeyword":
                         {
+                            if ( !isset( $xmlTextArray[$sectionName] ) )
+                            {
+                                continue;
+                            }
                             $eztextDom = new DOMDOcument( '1.0', 'UTF-8' );
                             $eztextDom->loadXML( $xmlTextArray[$sectionName] );
                             $text = $eztextDom->documentElement->textContent;
@@ -880,6 +900,10 @@ class eZOOImport
 
                         case "ezselection":
                         {
+                            if ( !isset( $xmlTextArray[$sectionName] ) )
+                            {
+                                continue;
+                            }
                             $eztextDom = new DOMDOcument( '1.0', 'UTF-8' );
                             $eztextDom->loadXML( $xmlTextArray[$sectionName] );
                             $text = trim( $eztextDom->documentElement->textContent );
@@ -899,6 +923,10 @@ class eZOOImport
 
                         case "ezinteger":
                         {
+                            if ( !isset( $xmlTextArray[$sectionName] ) )
+                            {
+                                continue;
+                            }
                             $eztextDom = new DOMDOcument( '1.0', 'UTF-8' );
                             $eztextDom->loadXML( $xmlTextArray[$sectionName] );
                             $text = trim( $eztextDom->documentElement->textContent );
@@ -915,6 +943,10 @@ class eZOOImport
 
                         case "ezobjectrelation":
                         {
+                            if ( !isset( $xmlTextArray[$sectionName] ) )
+                            {
+                                continue;
+                            }
                             $eztextDom = new DOMDOcument( '1.0', 'UTF-8' );
                             $eztextDom->loadXML( $xmlTextArray[$sectionName] );
                             $text = trim( $eztextDom->documentElement->textContent );
@@ -941,6 +973,10 @@ class eZOOImport
 
                         case "ezgmaplocation":
                         {
+                            if ( !isset( $xmlTextArray[$sectionName] ) )
+                            {
+                                continue;
+                            }
                             $eztextDom = new DOMDOcument( '1.0', 'UTF-8' );
                             $eztextDom->loadXML( $xmlTextArray[$sectionName] );
                             $string = trim( $eztextDom->documentElement->textContent );
@@ -964,6 +1000,10 @@ class eZOOImport
 
                         case "ezprice":
                         {
+                            if ( !isset( $xmlTextArray[$sectionName] ) )
+                            {
+                                continue;
+                            }
                             $eztextDom = new DOMDOcument( '1.0', 'UTF-8' );
                             $eztextDom->loadXML( $xmlTextArray[$sectionName] );
                             $price = trim( $eztextDom->documentElement->textContent );
